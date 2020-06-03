@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoey/models/task_data.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  final Function addTaskCallback;
-
-  const AddTaskScreen(this.addTaskCallback);
-
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   bool _isButtonDisabled;
-  TextEditingController taskTitleController = TextEditingController();
+  TextEditingController _taskTitleController = TextEditingController();
 
   @override
   void initState() {
@@ -40,7 +38,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ),
           ),
           TextField(
-            controller: taskTitleController,
+            controller: _taskTitleController,
             autofocus: true,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
@@ -48,7 +46,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ),
             onChanged: (newValue) {
               setState(() {
-                _isButtonDisabled = (taskTitleController.text == '');
+                _isButtonDisabled = (_taskTitleController.text == '');
               });
             },
           ),
@@ -68,7 +66,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             onPressed: _isButtonDisabled
                 ? null
                 : () {
-                    widget.addTaskCallback(taskTitleController.text);
+                    Provider.of<TaskData>(context, listen: false).addTask(
+                      newTaskTitle: _taskTitleController.text,
+                    );
+                    Navigator.pop(context);
                   },
           ),
         ],
